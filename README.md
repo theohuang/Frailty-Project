@@ -1,10 +1,8 @@
 # Frailty-Project
 
-Code by Theodore Huang
-
 ## Description
 
-This respository contains code to apply a frailty model to improve Mendelian model risk predictions. The Simulations folder contains simulation results for improving BRCAPRO breast cancer risk prediction under 6 settings: 2 types of BRCA1/2 mutation prevalences (low risk, high risk) and 3 types of data-generating frailty distributions (discrete uniform; bivariate normal with mean 0, correlation 0, and variances 0.3; bivariate normal with mean 0, correlation 0, and variances 2).
+This respository contains code to apply a frailty model to improve Mendelian model risk predictions. The Simulations folder contains simulation results for improving BRCAPRO breast cancer risk prediction under 6 settings: 2 types of BRCA1/2 mutation prevalences (low risk, high risk) and 3 types of data-generating frailty distributions (discrete uniform; bivariate normal with mean 0, correlation 0, and variances 0.3; bivariate normal with mean 0, correlation 0, and variances 2). All code is written by Theodore Huang except where specified.
 
 ## Running the code
 The way to reproduce the simulation results is as follows:
