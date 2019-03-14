@@ -19,8 +19,8 @@ The way to reproduce the simulation results is as follows:
 
 ### General files
 
-* Estimating Functions Discrete.R: functions used for the frailty method \\
-* Parameters Discrete.R: getting the baseline penetrances, survival functions, and hazard functions \\
+* Estimating Functions Discrete.R: functions used for the frailty method
+* Parameters Discrete.R: getting the baseline penetrances, survival functions, and hazard functions
 * ModelEvaluation_TH.R: code for getting model performance results (adapted from Zoe Guan's code)
 
 ### Simulations Folder
