@@ -44,8 +44,6 @@ The way to reproduce the simulation results is as follows:
 * simdat_().RData: simulated data
 * simdat_bc_().RData: subset of families with female probands free of breast cancer in simulated data
 
-* Population Frailty Distribution folder: has all the population-level frailty distributionsPopulation Family Frailty 
-
 #### Simulations subfolders:
 
 * Population Frailty Distribution folder: has all the population-level frailty distributions
