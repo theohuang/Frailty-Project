@@ -35,7 +35,7 @@ The way to reproduce the simulation results is as follows:
 #### Files
 
 * Frailty Simulation Functions.R: functions to generate data
-* FrailtySimDatGen*.R: generating data
+* FrailtySimDatGen().R: generating data
 * FrailtySim_Pop_().R: estimates population-level frailty distribution for simulations
 * FrailtySim_RP_().R: obtains family-specific frailty distributions and risk predictions for simulations
 * Frailty Simulation Analysis.R: code to obtain final results for simulation
