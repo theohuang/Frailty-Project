@@ -1,17 +1,26 @@
 ## Frailty simulation
 ## Generating the families
 ## Variance parameters of 0.3
-## Last udpated: March 10, 2019
+## Last udpated: April 11, 2019
 
 source("Frailty Simulation Functions.R")
 
 
 library(BayesMendel)
-library(BMmultigene)
 library(mvtnorm)
 library(dplyr)
+library(abind)
 library(doParallel)
 registerDoParallel(cores = 4)
+
+source(paste(getwd(), "/Simulations/Generating Families Functions/sim.simFam.R", sep = ""))
+source(paste(getwd(), "/Simulations/Generating Families Functions/genCancerPen.R", sep = ""))
+source(paste(getwd(), "/Simulations/Generating Families Functions/sim.buildGenoMat.R", sep = ""))
+source(paste(getwd(), "/Simulations/Generating Families Functions/sim.linkParents.R", sep = ""))
+source(paste(getwd(), "/Simulations/Generating Families Functions/sim.simCurAgeVar.R", sep = ""))
+source(paste(getwd(), "/Simulations/Generating Families Functions/sim.simCancerVars.R", sep = ""))
+source(paste(getwd(), "/Simulations/Generating Families Functions/sim.buildBranchOfAlleleMats.R", sep = ""))
+source(paste(getwd(), "/Simulations/Generating Families Functions/helpers.R", sep = ""))
 
 
 

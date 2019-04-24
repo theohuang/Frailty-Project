@@ -1,6 +1,6 @@
 ## Estimating Functions for Discrete Frailty, Bayesian Analysis
 ## Using BayesMendel package v2.1-5 -- crude/net penetrances
-## Last updated: March 13, 2019
+## Last updated: March 18, 2019
 
 ## Obtaining the conditional baseline hazard function
 cbhf <- function(w.list, f.w, pen, nr = 94){
@@ -49,13 +49,15 @@ mpfa <- function(w, hzd0, nr = 94){
 ## This runs BRCAPRO, incorporating germline testing and interventions
 ## It doesn't include race since this would overwrite the penetrance
 brcapro.fam <- function(fam, fut, id0, newpenet, race = NA, seed = 1,
-                        net = TRUE, gt = TRUE){
+                        net = TRUE, gt = TRUE, af.aj = NULL, af.naj = NULL){
   set.seed(seed)
   ## fut = follow-up time
   ## id0 = ID of proband
   ## newpenet = modified penetrance
   ## net = net risk
   ## gt = use genetic testing results
+  ## af.aj and af.naj = allele frequencies for AJ and non-AJ, respectively
+  ##                  (only used for simulations to input correct allele frequencies)
   brca.var <- c("ID", "Gender", "FatherID", "MotherID", "AffectedBreast",
                 "AffectedOvary", "AgeBreast", "AgeOvary", "AgeBreastContralateral",
                 "Twins", "ethnic", "Death", "AgeDeath")
@@ -84,9 +86,31 @@ brcapro.fam <- function(fam, fut, id0, newpenet, race = NA, seed = 1,
   }
   
   if(net == TRUE){
-    params <- brcaparams(penetrance.net = newpenet, age.by = fut)
+    if(!is.null(af.aj) & !is.null(af.naj)){
+      if(fam$ethnic[1] == "AJ"){
+        af <- list(c(1 - af.aj[1], af.aj[1]), c(1 - af.aj[2], af.aj[2]))
+      } else{
+        af <- list(c(1 - af.naj[1], af.naj[1]), c(1 - af.naj[2], af.naj[2]))
+      }
+      fam$ethnic <- "Other"
+      params <- brcaparams(penetrance.net = newpenet, age.by = fut,
+                           allef = af)
+    } else{
+      params <- brcaparams(penetrance.net = newpenet, age.by = fut)
+    }
   } else{
-    params <- brcaparams(penetrance.crude = newpenet, age.by = fut)
+    if(!is.null(af.aj) & !is.null(af.naj)){
+      if(fam$ethnic[1] == "AJ"){
+        af <- list(c(1 - af.aj[1], af.aj[1]), c(1 - af.aj[2], af.aj[2]))
+      } else{
+        af <- list(c(1 - af.naj[1], af.naj[1]), c(1 - af.naj[2], af.naj[2]))
+      }
+      fam$ethnic <- "Other"
+      params <- brcaparams(penetrance.crude = newpenet, age.by = fut,
+                           allef = af)
+    } else{
+      params <- brcaparams(penetrance.crude = newpenet, age.by = fut)
+    }
   }
   
   if(is.na(race)){
@@ -446,7 +470,8 @@ post.fam <- function(dat, i, int, net = TRUE){
 }
 
 ## risk predictions for each family
-rp.fam <- function(dat, i, int, res.post, net = TRUE, gt = TRUE){
+rp.fam <- function(dat, i, int, res.post, net = TRUE, gt = TRUE,
+                   af.aj = NULL, af.naj = NULL){
   fam <- tryCatch(fam.new(dat[dat$FamID == famid.list[int][i], ]), error = function(e) NULL)
   if(is.null(fam)){
     return(c(famid.list[int][i], rep(NA, 11)))
@@ -495,7 +520,8 @@ rp.fam <- function(dat, i, int, res.post, net = TRUE, gt = TRUE){
       }
     }
     
-    result <- brcapro.fam(fam, fut = 5, id0 = id.pro, newpenet = newpenet, net = net, gt = gt)
+    result <- brcapro.fam(fam, fut = 5, id0 = id.pro, newpenet = newpenet, net = net, gt = gt,
+                          af.aj = af.aj, af.naj = af.naj)
     res.brca$P.BC.5[ww] <- tryCatch(result@predictions[1, 2], error = function(e) NA)
     res.brca$P.OC.5[ww] <- tryCatch(result@predictions[1, 3], error = function(e) NA) 
     res.brca$P.BRCA[ww] <- tryCatch(result@probs[1], error = function(e) NA)
@@ -531,7 +557,8 @@ rp.fam <- function(dat, i, int, res.post, net = TRUE, gt = TRUE){
   defaultpenet$fFY[, 1:5] <- pen.o.dat.mar
   
   res.nf <- brcapro.fam(fam, fut = 5, id0 = id.pro,
-                        newpenet = defaultpenet, net = net, gt = gt)
+                        newpenet = defaultpenet, net = net, gt = gt,
+                        af.aj = af.aj, af.naj = af.naj)
   res.fam[7:11] <- as.numeric(c(tryCatch(res.nf@predictions[1, 2], error = function(e) NA),
                                 tryCatch(res.nf@predictions[1, 3], error = function(e) NA),
                                 tryCatch(res.nf@probs[1], error = function(e) NA),

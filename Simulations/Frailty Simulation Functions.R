@@ -1,5 +1,5 @@
 ## Functions for the Frailty Simulations
-## Last updated: November 28, 2018
+## Last updated: March 18, 2019
 
 ## obtains the covariance matrix for a bivariate normal
 mvn.sigma <- function(var, rho){
@@ -107,7 +107,7 @@ genCP <- function(genes, cancers, penCancersF, penCancersM, w, hzd0.b, hzd0.o){
 ## generating the families
 gen.fam.norm <- function(n.sim, genes, cancers, penCancersF, penCancersM, af.aj, af.naj, p.aj = 5.5 / 285,
                         mu, var, rho, hzd0.b, hzd0.o, seed = NULL, age.max = 94, age.min = 7,
-                        censoring = TRUE, t.fu = 5){
+                        censoring = TRUE, genderPro = "Female", t.fu = 5){
   ## t.fu = number of years of follow-up for risk prediction
   if(!is.null(seed)) set.seed(seed)
   
@@ -132,7 +132,8 @@ gen.fam.norm <- function(n.sim, genes, cancers, penCancersF, penCancersM, af.aj,
                                         nGrandchild, af,
                                         genCP(genes, cancers, penCancersF, penCancersM, w[i, ], hzd0.b, hzd0.o),
                                         includeGeno = TRUE, age.max = age.max,
-                                        age.min = age.min, censoring = censoring),
+                                        age.min = age.min, censoring = censoring,
+                                        genderPro = genderPro),
                              error = function(e) NULL)
     fam.sim[[i]]$W.BC <- w[i, 1]
     fam.sim[[i]]$W.OC <- w[i, 2]
@@ -168,7 +169,7 @@ gen.fam.norm <- function(n.sim, genes, cancers, penCancersF, penCancersM, af.aj,
 ## using discrete distribution
 gen.fam.dis <- function(n.sim, genes, cancers, penCancersF, penCancersM, af.aj, af.naj, p.aj = 5.5 / 285,
                          supp.w, f.w, hzd0.b, hzd0.o, seed = NULL, age.max = 94, age.min = 7,
-                         censoring = TRUE, t.fu = 5){
+                         censoring = TRUE, genderPro = "Female", t.fu = 5){
   ## t.fu = number of years of follow-up for risk prediction
   if(!is.null(seed)) set.seed(seed)
   
@@ -193,7 +194,8 @@ gen.fam.dis <- function(n.sim, genes, cancers, penCancersF, penCancersM, af.aj, 
                                         nGrandchild, af,
                                         genCP(genes, cancers, penCancersF, penCancersM, w[i, ], hzd0.b, hzd0.o),
                                         includeGeno = TRUE, age.max = age.max,
-                                        age.min = age.min, censoring = censoring),
+                                        age.min = age.min, censoring = censoring,
+                                        genderPro = genderPro),
                              error = function(e) NULL)
     fam.sim[[i]]$W.BC <- w[i, 1]
     fam.sim[[i]]$W.OC <- w[i, 2]

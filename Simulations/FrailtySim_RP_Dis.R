@@ -1,7 +1,7 @@
 ## Running the frailty model on the simulated data
 ## Using discrete distribution
 ## Net Risk
-## Last updated: March 14, 2019
+## Last updated: March 19, 2019
 
 rm(list = ls())
 a1 <- as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
@@ -37,9 +37,7 @@ w.list.o <- seq(-1.5, 1.5, 0.5)
 supp.w <- expand.grid(w.list.b, w.list.o)
 names(supp.w) <- c("W.BC", "W.OC")
 
-## using the posterior frailty distribution for the whole cgn data as the prior
-load("fwpop.dis.RData")
-f.w <- f.w.pop.dis
+f.w <- rep(1, nrow(supp.w)) / nrow(supp.w) ## uniform
 
 f.w.b <- rep(0, length(w.list.b))
 for(i in 1:length(w.list.b)){
@@ -67,7 +65,7 @@ for(i in 1:nrow(res.post)){
 res.post <- data.frame(res.post)
 res.post$FamID <- unique(dat$FamID)
 
-save(res.post, file = paste(getwd(), "/Frailty/Simulations/Family Frailty Distribution/Dis/simfamdistdis_", a1, ".RData", sep = ""))
+save(res.post, file = paste(getwd(), "/Frailty/Simulations/Family Frailty Distribution/Population/Dis/simfamdistdis_", a1, ".RData", sep = ""))
 
 ## now getting risk predictions
 start <- Sys.time()
@@ -81,7 +79,7 @@ names(res) <- c("FamID", "Prob.BC.5", "Prob.OC.5", "Prob.BRCA",
                 "Prob.BRCA1", "Prob.BRCA2", "Prob.BC.5.nf", "Prob.OC.5.nf",
                 "Prob.BRCA.nf", "Prob.BRCA1.nf", "Prob.BRCA2.nf")
 
-save(res, file = paste(getwd(), "/Frailty/Simulations/Risk Predictions/Dis/simresdis_", a1, ".RData", sep = ""))
+save(res, file = paste(getwd(), "/Frailty/Simulations/Risk Predictions/Population/Dis/simresdis_", a1, ".RData", sep = ""))
 
 
 

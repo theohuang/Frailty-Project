@@ -2,7 +2,7 @@
 ## Using variance parameters of 0.3
 ## Net Risk
 ## Higher risk
-## Last updated: March 14, 2019
+## Last updated: March 18, 2019
 
 rm(list = ls())
 a1 <- as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
@@ -21,6 +21,10 @@ load(paste(getwd(), "/Frailty/Simulations/simdat_bc_v03_hr.RData", sep = ""))
 
 ## only using subset of families
 famid.list <- unique(fam.sim.bc$FamID)
+
+## high-risk allele frequencies
+af.aj <- c(0.05, 0.05) ## AJ allele frequency
+af.naj <- c(0.02, 0.02) ## non-AJ allele frequency
 
 
 n.sim <- 500
@@ -73,7 +77,8 @@ save(res.post, file = paste(getwd(), "/Frailty/Simulations/Family Frailty Distri
 ## now getting risk predictions
 start <- Sys.time()
 res <- foreach(i = 1:length(int), .combine = rbind) %dopar% {
-  rp.fam(dat, i, int, res.post, net = net, gt = FALSE)
+  rp.fam(dat, i, int, res.post, net = net, gt = FALSE,
+         af.aj = af.aj, af.naj = af.naj)
 }
 difftime(Sys.time(), start, units = "secs")
 
