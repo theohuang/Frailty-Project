@@ -48,6 +48,6 @@ The way to reproduce the simulation results is as follows:
 
 * Population Frailty Distribution folder: has all the population-level frailty distributions
 * Family Frailty Distribution folder: has all the family-level frailty distributions
-* Risk Predictions: has all the risk predictions
-* Cluster Files: files to run on Harvard FAS cluster
-* Generating Families: has the code to generate families
+* Risk Predictions folder: has all the risk predictions
+* Cluster Files folder: files to run on Harvard FAS cluster
+* Generating Families Functions folder: has the code to generate families
