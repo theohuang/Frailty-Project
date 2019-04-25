@@ -15,6 +15,8 @@ The way to reproduce the simulation results is as follows:
     1. First run the corresponding FrailtySim_RP_().R file
     2. Then gather the data files together using code in Frailty Simulation Analysis.R.
     
+Note that running the code requires the BayesMendel R package, which can be found at https://projects.iq.harvard.edu/bayesmendel/bayesmendel-r-package.
+    
 ## The files are all described below:
 
 ### General files
