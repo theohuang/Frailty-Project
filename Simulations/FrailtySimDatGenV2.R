@@ -7,7 +7,7 @@ source("Frailty Simulation Functions.R")
 
 
 library(BayesMendel)
-=library(mvtnorm)
+library(mvtnorm)
 library(dplyr)
 library(abind)
 library(doParallel)

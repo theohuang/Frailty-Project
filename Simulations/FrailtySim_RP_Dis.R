@@ -1,7 +1,7 @@
 ## Running the frailty model on the simulated data
 ## Using discrete distribution
 ## Net Risk
-## Last updated: March 19, 2019
+## Last updated: May 1, 2019
 
 rm(list = ls())
 a1 <- as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
@@ -11,7 +11,7 @@ net <- TRUE
 library(BayesMendel)
 library(dplyr)
 library(data.table)
-library(BMmultigene)
+library(abind)
 library(doParallel)
 registerDoParallel(cores = 4)
 

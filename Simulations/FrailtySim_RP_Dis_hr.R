@@ -2,7 +2,7 @@
 ## Using discrete distribution
 ## Net Risk
 ## Higher risk families
-## Last updated: March 18, 2019
+## Last updated: May 1, 2019
 
 rm(list = ls())
 a1 <- as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
@@ -12,7 +12,7 @@ net <- TRUE
 library(BayesMendel)
 library(dplyr)
 library(data.table)
-library(BMmultigene)
+library(abind)
 library(doParallel)
 registerDoParallel(cores = 4)
 
@@ -42,9 +42,7 @@ w.list.o <- seq(-1.5, 1.5, 0.5)
 supp.w <- expand.grid(w.list.b, w.list.o)
 names(supp.w) <- c("W.BC", "W.OC")
 
-## using the estimated population-level frailty distribution
-load("fwpop.dis.hr.RData")
-f.w <- f.w.pop.dis.hr
+f.w <- rep(1, nrow(supp.w)) / nrow(supp.w) ## uniform
 
 f.w.b <- rep(0, length(w.list.b))
 for(i in 1:length(w.list.b)){

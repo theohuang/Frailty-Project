@@ -1,5 +1,5 @@
 ## Frailty Simulation Analysis
-## Last updated: March 26, 2019
+## Last updated: May 7, 2019
 
 library(dplyr)
 library(ggplot2)
@@ -9,6 +9,7 @@ library(plyr)
 library(pROC)
 dir.sim <- "/Users/Theo/Dropbox (Partners HealthCare)/Frailty Project/Simulations"
 
+theme_update(plot.title = element_text(hjust = 0.5))
 
 ### Variances of 0.3
 ### Family-specific frailty distribution
@@ -71,13 +72,15 @@ f.w <- rep(1, nrow(supp.w)) / nrow(supp.w) ## uniform
 ggplot(cbind(supp.w, Mean = base::colMeans(sim.fam.v03[, 1:49], na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Mean)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Bivariate Normal, Var = 0.3") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 ggplot(cbind(supp.w, Median = apply(sim.fam.v03[, 1:49], 2, median, na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Median)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Bivariate Normal, Var = 0.3") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 
@@ -85,13 +88,15 @@ ggplot(cbind(supp.w, Median = apply(sim.fam.v03[, 1:49], 2, median, na.rm = TRUE
 ggplot(cbind(supp.w, Mean = base::colMeans(sim.fam.v03.hr[, 1:49], na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Mean)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Bivariate Normal, Var = 0.3, High-risk allele frequency") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 ggplot(cbind(supp.w, Median = apply(sim.fam.v03.hr[, 1:49], 2, median, na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Median)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Bivariate Normal, Var = 0.3, High-risk allele frequency") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 
@@ -168,26 +173,30 @@ for(i in 1:198){
 ggplot(cbind(supp.w, Mean = base::colMeans(sim.fam.v2[, 1:49], na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Mean)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Bivariate normal, Var = 2") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 ggplot(cbind(supp.w, Median = apply(sim.fam.v2[, 1:49], 2, median, na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Median)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Bivariate normal, Var = 2") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 
 ggplot(cbind(supp.w, Mean = base::colMeans(sim.fam.v2.hr[, 1:49], na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Mean)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Bivariate normal, Var = 2, High-risk allele frequency") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 ggplot(cbind(supp.w, Median = apply(sim.fam.v2.hr[, 1:49], 2, median, na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Median)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Bivariate normal, Var = 2, High-risk allele frequency") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 
@@ -275,13 +284,15 @@ for(i in 1:198){
 ggplot(cbind(supp.w, Mean = base::colMeans(sim.fam.dis[, 1:49], na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Mean)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Discrete uniform") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 ggplot(cbind(supp.w, Median = apply(sim.fam.dis[, 1:49], 2, median, na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Median)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Discrete uniform") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 
@@ -291,13 +302,15 @@ ggplot(cbind(supp.w, Median = apply(sim.fam.dis[, 1:49], 2, median, na.rm = TRUE
 ggplot(cbind(supp.w, Mean = base::colMeans(sim.fam.dis.hr[, 1:49], na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Mean)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Discrete uniform, High-risk allele frequency") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 ggplot(cbind(supp.w, Median = apply(sim.fam.dis.hr[, 1:49], 2, median, na.rm = TRUE)),
        aes(x = W.BC, y = W.OC, fill = Median)) +
   geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
+                     y = "Ovarian Cancer Frailty",
+                     title = "Discrete uniform, High-risk allele frequency") +
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 
@@ -341,8 +354,7 @@ sim.res.dis.noc$woc.mean <- apply(filter(sim.fam.dis, FamID %in% sim.res.dis.noc
                                   mean.post.o, w.list.o = w.list.o, supp.w = supp.w)
 sim.res.dis.noc$wbc.mean.dis <- sapply(sim.res.dis.noc$wbc.mean, function(x) w.list.b[which.min(abs(w.list.b - x))])
 sim.res.dis.noc$woc.mean.dis <- sapply(sim.res.dis.noc$woc.mean, function(x) w.list.o[which.min(abs(w.list.o - x))])
-# ggplot(sim.res.dis.noc, aes(wbc.mean.dis, woc.mean.dis)) +
-#   stat_bin2d(aes(fill = stat(count)), binwidth = c(0.5, 0.5))
+
 
 sim.res.dis.noc$wbc.mode <- apply(filter(sim.fam.dis, FamID %in% sim.res.dis.noc$FamID)[, 1:(ncol(sim.fam.dis) - 1)], 1,
                                   function(x) supp.w$W.BC[which.max(x)])
@@ -385,28 +397,6 @@ ggplot(sim.res.dis.noc, aes(factor(W.BC), wbc.mean)) +
 ggplot(sim.res.dis.noc, aes(factor(W.BC), wbc.mode)) +
   geom_boxplot()
 
-# par(mfrow = c(3, 3))
-# for(i in 1:length(w.list.b15)){
-#   hist(post.prior.dis[, which(supp.w$W.BC == w.list.b[i] & supp.w$W.OC == 0)],
-#        xlim = c(0, 0.1), ylim = c(0, 4500), xlab = "Posterior",
-#        main = paste("BC Frailty = ", w.list.b[i], sep = ""))
-#   abline(v = mean(post.all.dis[, which(supp.w$W.BC == w.list.b[i] & supp.w$W.OC == 0)]),
-#          col = "blue", lwd = 3)
-#   abline(v = median(post.all.dis[, which(supp.w$W.BC == w.list.b[i] & supp.w$W.OC == 0)]),
-#          col = "red", lwd = 3)
-# }
-# par(mfrow = c(1, 1))
-
-
-
-# # average number of relatives with BC
-# dt <- data.table(fam.sim)
-# dt <- dt[, length(which(.SD$isProband != 1 & .SD$AffectedBreast == 1)), by = FamID]
-# mean(dt$V1)
-# 
-# dt <- data.table(fam.sim)
-# dt <- dt[, nrow(.SD), by = FamID]
-# mean(dt$V1)
 
 
 getOE <- function(dat, out, pred){
@@ -457,65 +447,17 @@ perf.fs <- function(dat, out, pred.f, pred.nf, famsize){
 
 ### performance results by family size
 
-perf.fs(sim.res.v03.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", 20)
-perf.fs(sim.res.v03.hr.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", 20)
-perf.fs(sim.res.v2.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", 20)
-perf.fs(sim.res.v2.hr.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", 20)
-perf.fs(sim.res.dis.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", 20)
-perf.fs(sim.res.dis.hr.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", 20)
+cutoff <- 30
 
-## population-level
-getOE(filter(sim.res.v03.noc, FamSize <= 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.v03.noc, FamSize > 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.v03.noc, FamSize <= 30), "BC.5", "Prob.BC.5.nf")
-getOE(filter(sim.res.v03.noc, FamSize > 30), "BC.5", "Prob.BC.5.nf")
+xtable(rbind(perf.fs(sim.res.v03.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", cutoff),
+             perf.fs(sim.res.v2.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", cutoff),
+             perf.fs(sim.res.dis.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", cutoff),
+             perf.fs(sim.res.v03.hr.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", cutoff),
+             perf.fs(sim.res.v2.hr.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", cutoff),
+             perf.fs(sim.res.dis.hr.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", cutoff))[, 1:3],
+       digits = 3)
 
-getOE(filter(sim.res.v2.noc, FamSize <= 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.v2.noc, FamSize > 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.v2.noc, FamSize <= 30), "BC.5", "Prob.BC.5.nf")
-getOE(filter(sim.res.v2.noc, FamSize > 30), "BC.5", "Prob.BC.5.nf")
 
-getOE(filter(sim.res.dis.noc, FamSize <= 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.dis.noc, FamSize > 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.dis.noc, FamSize <= 30), "BC.5", "Prob.BC.5.nf")
-getOE(filter(sim.res.dis.noc, FamSize > 30), "BC.5", "Prob.BC.5.nf")
-
-## high-risk
-getOE(filter(sim.res.v03.hr.noc, FamSize <= 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.v03.hr.noc, FamSize > 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.v03.hr.noc, FamSize <= 30), "BC.5", "Prob.BC.5.nf")
-getOE(filter(sim.res.v03.hr.noc, FamSize > 30), "BC.5", "Prob.BC.5.nf")
-
-getOE(filter(sim.res.v2.hr.noc, FamSize <= 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.v2.hr.noc, FamSize > 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.v2.hr.noc, FamSize <= 30), "BC.5", "Prob.BC.5.nf")
-getOE(filter(sim.res.v2.hr.noc, FamSize > 30), "BC.5", "Prob.BC.5.nf")
-
-getOE(filter(sim.res.dis.hr.noc, FamSize <= 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.dis.hr.noc, FamSize > 30), "BC.5", "Prob.BC.5")
-getOE(filter(sim.res.dis.hr.noc, FamSize <= 30), "BC.5", "Prob.BC.5.nf")
-getOE(filter(sim.res.dis.hr.noc, FamSize > 30), "BC.5", "Prob.BC.5.nf")
-
-### overall results
-# res.all <- setNames(data.frame(matrix(NA, 6, 3)), c("OE", "AUC", "rBS"))
-# res.all$OE <- c(getOE(res.prior03.noc, "BC.5", "Prob.BC.5"),
-#                 getOE(res.prior03.noc, "BC.5", "Prob.BC.5.nf"),
-#                 getOE(res.prior2.noc, "BC.5", "Prob.BC.5"),
-#                 getOE(res.prior2.noc, "BC.5", "Prob.BC.5.nf"),
-#                 getOE(res.prior.dis.noc, "BC.5", "Prob.BC.5"),
-#                 getOE(res.prior.dis.noc, "BC.5", "Prob.BC.5.nf"))
-# res.all$AUC <- c(getAUC(res.prior03.noc, "BC.5", "Prob.BC.5"),
-#                 getAUC(res.prior03.noc, "BC.5", "Prob.BC.5.nf"),
-#                 getAUC(res.prior2.noc, "BC.5", "Prob.BC.5"),
-#                 getAUC(res.prior2.noc, "BC.5", "Prob.BC.5.nf"),
-#                 getAUC(res.prior.dis.noc, "BC.5", "Prob.BC.5"),
-#                 getAUC(res.prior.dis.noc, "BC.5", "Prob.BC.5.nf"))
-# res.all$rBS <- c(getRBS(res.prior03.noc, "BC.5", "Prob.BC.5"),
-#                 getRBS(res.prior03.noc, "BC.5", "Prob.BC.5.nf"),
-#                 getRBS(res.prior2.noc, "BC.5", "Prob.BC.5"),
-#                 getRBS(res.prior2.noc, "BC.5", "Prob.BC.5.nf"),
-#                 getRBS(res.prior.dis.noc, "BC.5", "Prob.BC.5"),
-#                 getRBS(res.prior.dis.noc, "BC.5", "Prob.BC.5.nf"))
 
 nboot <- 1000
 res.all <- setNames(data.frame(matrix(NA, 6, 9)), c("OE", "OE_lo", "OE_hi",
@@ -548,7 +490,7 @@ rownames(res.all.tab) <- c("BVN 0.3, Frailty", "BVN 0.3, No Frailty",
 xtable(res.all.tab)
 
 
-nboot <- 100
+nboot <- 1000
 res.all.hr <- setNames(data.frame(matrix(NA, 6, 9)), c("OE", "OE_lo", "OE_hi",
                                                        "AUC", "AUC_lo", "AUC_hi",
                                                        "rBS", "rBS_lo", "rBS_hi"))
@@ -583,168 +525,11 @@ save(sim.res.v03.noc, sim.res.v2.noc, sim.res.dis.noc,
      sim.fam.v03, sim.fam.v2, sim.fam.dis,
      sim.res.v03.hr.noc, sim.res.v2.hr.noc, sim.res.dis.hr.noc,
      sim.fam.v03.hr, sim.fam.v2.hr, sim.fam.dis.hr,
-     res.all, res.all.tab, res.all.hr, res.all.tab.hr,
+     res.all, res.all.tab, res.all.hr, res.all.hr.tab,
      file = "Frailty_Sim_Analysis_Results.RData")
 
 
 ########## High risk families ##########
-
-### Variances of 0.3
-### Family-specific frailty distribution
-for(i in 1:100){
-  load(paste(dir.sim, "/Family Frailty Distribution/High Risk/Var03/simfamdistv03hr_", i, ".RData", sep = ""))
-  if(i == 1){
-    sim.fam.v03.hr <- res.post
-  } else{
-    sim.fam.v03.hr <- rbind(sim.fam.v03.hr, res.post)
-  }
-}
-
-### Getting the risk prediction results
-for(i in 1:100){
-  load(paste(dir.sim, "/Risk Predictions/High Risk/Var03/simresv03hr_", i, ".RData", sep = ""))
-  if(i == 1){
-    sim.res.v03.hr <- res
-  } else{
-    if(ncol(res) == 12){
-      res <- res[, 1:11]
-    }
-    sim.res.v03.hr <- rbind(sim.res.v03.hr, res)
-  }
-}
-
-## Heatmaps of means and medians of posterior frailty probabilities
-ggplot(cbind(supp.w, Mean = base::colMeans(sim.fam.v03.hr[, 1:49], na.rm = TRUE)),
-       aes(x = W.BC, y = W.OC, fill = Mean)) +
-  geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
-  scale_x_continuous(breaks = w.list.b) +
-  scale_y_continuous(breaks = w.list.o)
-ggplot(cbind(supp.w, Median = apply(sim.fam.v03.hr[, 1:49], 2, median, na.rm = TRUE)),
-       aes(x = W.BC, y = W.OC, fill = Median)) +
-  geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
-  scale_x_continuous(breaks = w.list.b) +
-  scale_y_continuous(breaks = w.list.o)
-
-
-
-load(paste(getwd(), "/Simulations/simdat_v03_hr.RData", sep = ""))
-sim.res.v03.hr$BC.5 <- filter(fam.sim, FamID %in% sim.res.v03.hr$FamID, isProband == 1)$AffectedBreast.fu
-sim.res.v03.noc.hr <- filter(sim.res.v03.hr, FamID %in% filter(fam.sim, FamID %in% sim.res.v03.hr$FamID, isProband == 1, AffectedOvary == 0)$FamID)
-
-
-
-### Variances of 2
-### Family-specific frailty distribution
-for(i in 1:99){
-  load(paste(dir.sim, "/Family Frailty Distribution/High Risk/Var2/simfamdistv2hr_", i, ".RData", sep = ""))
-  if(i == 1){
-    sim.fam.v2.hr <- res.post
-  } else{
-    sim.fam.v2.hr <- rbind(sim.fam.v2.hr, res.post)
-  }
-}
-
-### Getting the risk prediction results
-for(i in 1:99){
-  load(paste(dir.sim, "/Risk Predictions/High Risk/Var2/simresv2hr_", i, ".RData", sep = ""))
-  if(i == 1){
-    sim.res.v2.hr <- res
-  } else{
-    if(ncol(res) == 12){
-      res <- res[, 1:11]
-    }
-    sim.res.v2.hr <- rbind(sim.res.v2.hr, res)
-  }
-}
-
-
-## Heatmaps of means and medians of posterior frailty probabilities
-ggplot(cbind(supp.w, Mean = base::colMeans(sim.fam.v2.hr[, 1:49], na.rm = TRUE)),
-       aes(x = W.BC, y = W.OC, fill = Mean)) +
-  geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
-  scale_x_continuous(breaks = w.list.b) +
-  scale_y_continuous(breaks = w.list.o)
-ggplot(cbind(supp.w, Median = apply(sim.fam.v2.hr[, 1:49], 2, median, na.rm = TRUE)),
-       aes(x = W.BC, y = W.OC, fill = Median)) +
-  geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
-  scale_x_continuous(breaks = w.list.b) +
-  scale_y_continuous(breaks = w.list.o)
-
-load(paste(getwd(), "/Simulations/simdat_v2_hr.RData", sep = ""))
-sim.res.v2.hr$BC.5 <- filter(fam.sim, FamID %in% sim.res.v2.hr$FamID, isProband == 1)$AffectedBreast.fu
-sim.res.v2.noc.hr <- filter(sim.res.v2.hr, FamID %in% filter(fam.sim, FamID %in% sim.res.v2.hr$FamID, isProband == 1, AffectedOvary == 0)$FamID)
-
-
-### Discrete distribution
-### Family-specific frailty distribution
-for(i in 1:200){
-  load(paste(dir.sim, "/Family Frailty Distribution/Population/Dis/simfamdistdis_", i, ".RData", sep = ""))
-  if(i == 1){
-    sim.fam.dis <- res.post
-  } else{
-    sim.fam.dis <- rbind(sim.fam.dis, res.post)
-  }
-}
-
-### Getting the risk prediction results
-for(i in 1:200){
-  load(paste(dir.sim, "/Risk Predictions/Population/Dis/simresdis_", i, ".RData", sep = ""))
-  if(i == 1){
-    sim.res.dis <- res
-  } else{
-    if(ncol(res) == 12){
-      res <- res[, 1:11]
-    }
-    sim.res.dis <- rbind(sim.res.dis, res)
-  }
-}
-
-### Family-specific frailty distribution
-for(i in 1:198){
-  load(paste(dir.sim, "/Family Frailty Distribution/High Risk/Dis/simfamdistdishr_", i, ".RData", sep = ""))
-  if(i == 1){
-    sim.fam.dis.hr <- res.post
-  } else{
-    sim.fam.dis.hr <- rbind(sim.fam.dis.hr, res.post)
-  }
-}
-
-### Getting the risk prediction results
-for(i in 1:198){
-  load(paste(dir.sim, "/Risk Predictions/High Risk/Dis/simresdishr_", i, ".RData", sep = ""))
-  if(i == 1){
-    sim.res.dis.hr <- res
-  } else{
-    if(ncol(res) == 12){
-      res <- res[, 1:11]
-    }
-    sim.res.dis.hr <- rbind(sim.res.dis.hr, res)
-  }
-}
-
-
-## Heatmaps of means and medians of posterior frailty probabilities
-ggplot(cbind(supp.w, Mean = base::colMeans(sim.fam.dis.hr[, 1:49], na.rm = TRUE)),
-       aes(x = W.BC, y = W.OC, fill = Mean)) +
-  geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
-  scale_x_continuous(breaks = w.list.b) +
-  scale_y_continuous(breaks = w.list.o)
-ggplot(cbind(supp.w, Median = apply(sim.fam.dis.hr[, 1:49], 2, median, na.rm = TRUE)),
-       aes(x = W.BC, y = W.OC, fill = Median)) +
-  geom_tile() + labs(x = "Breast Cancer Frailty",
-                     y = "Ovarian Cancer Frailty") +
-  scale_x_continuous(breaks = w.list.b) +
-  scale_y_continuous(breaks = w.list.o)
-
-load(paste(getwd(), "/Simulations/simdat_dis_hr.RData", sep = ""))
-sim.res.dis.hr$BC.5 <- filter(fam.sim, FamID %in% sim.res.dis.hr$FamID, isProband == 1)$AffectedBreast.fu
-sim.res.dis.noc.hr <- filter(sim.res.dis.hr, FamID %in% filter(fam.sim, FamID %in% sim.res.dis.hr$FamID, isProband == 1, AffectedOvary == 0)$FamID)
-
 
 nboot <- 1000
 res.all.hr <- setNames(data.frame(matrix(NA, 6, 9)), c("OE", "OE_lo", "OE_hi",
@@ -773,7 +558,9 @@ for(i in 1:6){
 xtable(res.all.tab.hr)
 
 
-save(sim.res.v03.noc.hr, sim.res.v2.noc.hr, sim.res.dis.noc.hr,
+save(sim.res.v03.hr.noc, sim.res.v2.hr.noc, sim.res.dis.hr.noc,
      sim.fam.v03.hr, sim.fam.v2.hr, sim.fam.dis.hr,
      res.all.hr, res.all.tab.hr,
      file = "Frailty_Sim_Analysis_Results_hr.RData")
+
+

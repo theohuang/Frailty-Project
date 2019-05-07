@@ -1,6 +1,19 @@
 ## Estimating Functions for Discrete Frailty, Bayesian Analysis
 ## Using BayesMendel package v2.1-5 -- crude/net penetrances
-## Last updated: March 18, 2019
+## Last updated: May 2, 2019
+
+## peeling-paring functions
+source(paste(getwd(), "/Peeling Functions/pp.ant.R", sep = ""))
+source(paste(getwd(), "/Peeling Functions/pp.peelingParing.R", sep = ""))
+source(paste(getwd(), "/Peeling Functions/pp.sub.R", sep = ""))
+source(paste(getwd(), "/Peeling Functions/pp.inheritanceProb.R", sep = ""))
+source(paste(getwd(), "/Peeling Functions/pp.possibleGenotypes.R", sep = ""))
+source(paste(getwd(), "/Peeling Functions/pp.childMatrix.R", sep = ""))
+source(paste(getwd(), "/Peeling Functions/pp.edgeMatrix.R", sep = ""))
+source(paste(getwd(), "/Peeling Functions/pp.initializeA.R", sep = ""))
+source(paste(getwd(), "/Peeling Functions/pp.prevalences.R", sep = ""))
+source(paste(getwd(), "/Peeling Functions/pp.initializeP.R", sep = ""))
+
 
 ## Obtaining the conditional baseline hazard function
 cbhf <- function(w.list, f.w, pen, nr = 94){
