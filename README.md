@@ -2,7 +2,7 @@
 
 ## Description
 
-This respository contains code to apply a frailty model to improve Mendelian model risk predictions. The Simulations folder contains simulation results for improving BRCAPRO breast cancer risk prediction under 6 settings: 2 types of BRCA1/2 mutation prevalences (low risk, high risk) and 3 types of data-generating frailty distributions (discrete uniform; bivariate normal with mean (0, 0), correlation 0, and variances 0.3; bivariate normal with mean (0, 0), correlation 0, and variances 2). All code is written by Theodore Huang except where specified.
+This respository contains code to apply a frailty model to improve Mendelian model risk predictions. The Simulations folder contains simulation results for improving BRCAPRO breast cancer risk prediction under 7 settings: the first 6 settings are from 2 types of BRCA1/2 mutation allele frequencies (default BRCAPRO, high-risk) and 3 types of data-generating frailty distributions (discrete uniform; bivariate normal with mean (0, 0), correlation 0, and variances 0.3; bivariate normal with mean (0, 0), correlation 0, and variances 2). The last setting uses default BRCAPRO allele frequencies with a frailty distribution where there is correlation between the breast and ovarian cancer frailty variates. All code is written by Theodore Huang except where specified.
 
 ## Running the code
 The way to reproduce the simulation results is as follows:
@@ -30,6 +30,7 @@ Note that running the code requires the BayesMendel R package, which can be foun
 * "V03" means bivariate normal distribution with mean 0, correlation 0, and variances of 0.3
 * "V2" means bivariate normal distribution with mean 0, correlation 0, and variances of 2
 * "hr" means high-risk families (using higher prevalences for AJ and non-AJ families)
+* "cor" means using the correlated frailty distribution
 
 #### Files
 
