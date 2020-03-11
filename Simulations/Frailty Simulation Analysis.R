@@ -1,5 +1,5 @@
 ## Frailty Simulation Analysis
-## Last updated: May 7, 2019
+## Last updated: March 10, 2020
 
 library(dplyr)
 library(ggplot2)
@@ -7,9 +7,13 @@ library(data.table)
 library(xtable)
 library(plyr)
 library(pROC)
-dir.sim <- "/Users/Theo/Dropbox (Partners HealthCare)/Frailty Project/Simulations"
+dir.sim <- "/Users/thuang/Dropbox (Partners HealthCare)/Frailty Project/Simulations"
 
 theme_update(plot.title = element_text(hjust = 0.5))
+
+
+
+###### Loading simulated data ######
 
 ### Variances of 0.3
 ### Family-specific frailty distribution
@@ -221,15 +225,6 @@ sim.res.v2.hr.noc$FamSize <- merge(sim.res.v2.hr.noc, dt, by = "FamID")$V1
 
 
 
-# 
-# load(paste(getwd(), "/Simulations/simdat_v03.RData", sep = ""))
-# nrow(filter(fam.sim, AffectedBreast >= 1, isProband != 1)) / length(unique(fam.sim$FamID))
-# load(paste(getwd(), "/Simulations/simdat_v2.RData", sep = ""))
-# nrow(filter(fam.sim, AffectedBreast >= 1, isProband != 1)) / length(unique(fam.sim$FamID))
-# load(paste(getwd(), "/Simulations/simdat_dis.RData", sep = ""))
-# nrow(filter(fam.sim, AffectedBreast >= 1, isProband != 1)) / length(unique(fam.sim$FamID))
-
-
 
 ### Discrete distribution
 ### Family-specific frailty distribution
@@ -254,6 +249,40 @@ for(i in 1:200){
     sim.res.dis <- rbind(sim.res.dis, res)
   }
 }
+
+## Correlated frailty distribution
+### Family-specific frailty distribution
+for(i in 1:200){
+  load(paste(dir.sim, "/Family Frailty Distribution/Population/Dis/Cor/simfamdistdiscor_", i, ".RData", sep = ""))
+  if(i == 1){
+    sim.fam.dis.cor <- res.post
+  } else{
+    sim.fam.dis.cor <- rbind(sim.fam.dis.cor, res.post)
+  }
+}
+
+### Getting the risk prediction results
+for(i in 1:200){
+  load(paste(dir.sim, "/Risk Predictions/Population/Dis/Cor/simresdiscor_", i, ".RData", sep = ""))
+  if(i == 1){
+    sim.res.dis.cor <- res
+  } else{
+    if(ncol(res) == 12){
+      res <- res[, 1:11]
+    }
+    sim.res.dis.cor <- rbind(sim.res.dis.cor, res)
+  }
+}
+
+ggplot(cbind(supp.w, f.w),
+       aes(x = W.BC, y = W.OC, fill = f.w)) +
+  geom_tile() + geom_text(aes(label = round(f.w, 3)), col = "white") +
+  labs(x = "Breast Cancer Frailty",
+       y = "Ovarian Cancer Frailty",
+       title = "Correlated Discrete Distribution") +
+  scale_x_continuous(breaks = w.list.b) +
+  scale_y_continuous(breaks = w.list.o) +
+  scale_fill_continuous(name = expression(f[W](w)))
 
 ## High risk
 ### Family-specific frailty distribution
@@ -296,6 +325,8 @@ ggplot(cbind(supp.w, Median = apply(sim.fam.dis[, 1:49], 2, median, na.rm = TRUE
   scale_x_continuous(breaks = w.list.b) +
   scale_y_continuous(breaks = w.list.o)
 
+hist(sim.fam.dis[, which(supp.w$W.BC == 1.5 & supp.w$W.OC == 0)])
+
 
 
 ## Heatmaps of means and medians of posterior frailty probabilities
@@ -317,6 +348,12 @@ ggplot(cbind(supp.w, Median = apply(sim.fam.dis.hr[, 1:49], 2, median, na.rm = T
 load(paste(getwd(), "/Simulations/simdat_dis.RData", sep = ""))
 sim.res.dis$BC.5 <- filter(fam.sim, FamID %in% sim.res.dis$FamID, isProband == 1)$AffectedBreast.fu
 sim.res.dis.noc <- filter(sim.res.dis, FamID %in% filter(fam.sim, FamID %in% sim.res.dis$FamID, isProband == 1, AffectedOvary == 0)$FamID)
+
+## Correlated frailty distribution
+load(paste(dir.sim, "/simdat_dis_cor.RData", sep = ""))
+sim.res.dis.cor$BC.5 <- filter(fam.sim, FamID %in% sim.res.dis.cor$FamID, isProband == 1)$AffectedBreast.fu
+sim.res.dis.cor.noc <- filter(sim.res.dis.cor, FamID %in% filter(fam.sim, FamID %in% sim.res.dis.cor$FamID, isProband == 1, AffectedOvary == 0)$FamID)
+
 
 ## family size
 dt <- data.table(fam.sim)
@@ -412,18 +449,42 @@ getRBS <- function(dat, out, pred){
 }
 
 
-perf.boot.sim <- function(dat, out, pred, nboot){
+# perf.boot.sim <- function(dat, out, pred, nboot){
+#   res.boot <- setNames(data.frame(matrix(NA, nboot, 3)), c("OE", "AUC", "rBS"))
+#   for(i in 1:nboot){
+#     dat.boot <- dat[sample(1:nrow(dat), nrow(dat), replace = TRUE), ]
+#     res.boot$OE[i] <- getOE(dat.boot, out, pred)
+#     res.boot$AUC[i] <- getAUC(dat.boot, out, pred)
+#     res.boot$rBS[i] <- getRBS(dat.boot, out, pred)
+#   }
+#   res <- c(getOE(dat, out, pred), quantile(res.boot$OE, 0.025), quantile(res.boot$OE, 0.975),
+#            getAUC(dat, out, pred), quantile(res.boot$AUC, 0.025), quantile(res.boot$AUC, 0.975),
+#            getRBS(dat, out, pred), quantile(res.boot$rBS, 0.025), quantile(res.boot$rBS, 0.975))
+#   return(res)
+# }
+
+perf.boot.sim.comp <- function(dat, out, pred.f, pred.nf, nboot, seed = 12345){
+  set.seed(seed)
   res.boot <- setNames(data.frame(matrix(NA, nboot, 3)), c("OE", "AUC", "rBS"))
+  oe <- auc <- rbs <- setNames(data.frame(matrix(NA, nboot, 2)), c("Frailty", "NoFrailty"))
   for(i in 1:nboot){
     dat.boot <- dat[sample(1:nrow(dat), nrow(dat), replace = TRUE), ]
-    res.boot$OE[i] <- getOE(dat.boot, out, pred)
-    res.boot$AUC[i] <- getAUC(dat.boot, out, pred)
-    res.boot$rBS[i] <- getRBS(dat.boot, out, pred)
+    oe$Frailty[i] <- getOE(dat.boot, out, pred.f)
+    oe$NoFrailty[i] <- getOE(dat.boot, out, pred.nf)
+    auc$Frailty[i] <- getAUC(dat.boot, out, pred.f)
+    auc$NoFrailty[i] <- getAUC(dat.boot, out, pred.nf)
+    rbs$Frailty[i] <- getRBS(dat.boot, out, pred.f)
+    rbs$NoFrailty[i] <- getRBS(dat.boot, out, pred.nf)
   }
-  res <- c(getOE(dat, out, pred), quantile(res.boot$OE, 0.025), quantile(res.boot$OE, 0.975),
-           getAUC(dat, out, pred), quantile(res.boot$AUC, 0.025), quantile(res.boot$AUC, 0.975),
-           getRBS(dat, out, pred), quantile(res.boot$rBS, 0.025), quantile(res.boot$rBS, 0.975))
-  return(res)
+  
+  res <- rbind(c(getOE(dat, out, pred.f), quantile(oe$Frailty, 0.025), quantile(oe$Frailty, 0.975),
+           getAUC(dat, out, pred.f), quantile(auc$Frailty, 0.025), quantile(auc$Frailty, 0.975),
+           getRBS(dat, out, pred.f), quantile(rbs$Frailty, 0.025), quantile(rbs$Frailty, 0.975)),
+           c(getOE(dat, out, pred.nf), quantile(oe$NoFrailty, 0.025), quantile(oe$NoFrailty, 0.975),
+             getAUC(dat, out, pred.nf), quantile(auc$NoFrailty, 0.025), quantile(auc$NoFrailty, 0.975),
+             getRBS(dat, out, pred.nf), quantile(rbs$NoFrailty, 0.025), quantile(rbs$NoFrailty, 0.975)))
+  
+  return(list(res = res, oe = oe, auc = auc, rbs = rbs))
 }
 
 perf.fs <- function(dat, out, pred.f, pred.nf, famsize){
@@ -459,108 +520,71 @@ xtable(rbind(perf.fs(sim.res.v03.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", cutof
 
 
 
-nboot <- 1000
-res.all <- setNames(data.frame(matrix(NA, 6, 9)), c("OE", "OE_lo", "OE_hi",
-                                                    "AUC", "AUC_lo", "AUC_hi",
-                                                    "rBS", "rBS_lo", "rBS_hi"))
+#### Performance Metrics ######
 
-start <- Sys.time()
-res.all[1, ] <- perf.boot.sim(sim.res.v03.noc, "BC.5", "Prob.BC.5", nboot)
-res.all[2, ] <- perf.boot.sim(sim.res.v03.noc, "BC.5", "Prob.BC.5.nf", nboot)
-res.all[3, ] <- perf.boot.sim(sim.res.v2.noc, "BC.5", "Prob.BC.5", nboot)
-res.all[4, ] <- perf.boot.sim(sim.res.v2.noc, "BC.5", "Prob.BC.5.nf", nboot)
-res.all[5, ] <- perf.boot.sim(sim.res.dis.noc, "BC.5", "Prob.BC.5", nboot)
-res.all[6, ] <- perf.boot.sim(sim.res.dis.noc, "BC.5", "Prob.BC.5.nf", nboot)
-print(difftime(Sys.time(), start, units = "secs"))
-
-res.all.tab <- setNames(data.frame(matrix(NA, 6, 3)), c("OE", "AUC", "rBS"))
-for(i in 1:6){
-  res.all.tab$OE[i] <- paste(round(res.all$OE[i], 3), " (", round(res.all$OE_lo[i], 3),
-                             ", ", round(res.all$OE_hi[i], 3), ")", sep = "")
-  res.all.tab$AUC[i] <- paste(round(res.all$AUC[i], 3), " (", round(res.all$AUC_lo[i], 3),
-                              ", ", round(res.all$AUC_hi[i], 3), ")", sep = "")
-  res.all.tab$rBS[i] <- paste(round(res.all$rBS[i], 3), " (", round(res.all$rBS_lo[i], 3),
-                              ", ", round(res.all$rBS_hi[i], 3), ")", sep = "")
-}
-
-rownames(res.all.tab) <- c("BVN 0.3, Frailty", "BVN 0.3, No Frailty",
-                           "BVN 2, Frailty", "BVN 2, No Frailty",
-                           "DU, Frailty", "DU, No Frailty")
-
-xtable(res.all.tab)
-
+## BRCAPRO allele frequencies
 
 nboot <- 1000
-res.all.hr <- setNames(data.frame(matrix(NA, 6, 9)), c("OE", "OE_lo", "OE_hi",
-                                                       "AUC", "AUC_lo", "AUC_hi",
-                                                       "rBS", "rBS_lo", "rBS_hi"))
+sim.v03.boot <- perf.boot.sim.comp(sim.res.v03.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", nboot)
+sim.v2.boot <- perf.boot.sim.comp(sim.res.v2.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", nboot)
+sim.dis.boot <- perf.boot.sim.comp(sim.res.dis.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", nboot)
 
-start <- Sys.time()
-res.all.hr[1, ] <- perf.boot.sim(sim.res.v03.hr.noc, "BC.5", "Prob.BC.5", nboot)
-res.all.hr[2, ] <- perf.boot.sim(sim.res.v03.hr.noc, "BC.5", "Prob.BC.5.nf", nboot)
-res.all.hr[3, ] <- perf.boot.sim(sim.res.v2.hr.noc, "BC.5", "Prob.BC.5", nboot)
-res.all.hr[4, ] <- perf.boot.sim(sim.res.v2.hr.noc, "BC.5", "Prob.BC.5.nf", nboot)
-res.all.hr[5, ] <- perf.boot.sim(sim.res.dis.hr.noc, "BC.5", "Prob.BC.5", nboot)
-res.all.hr[6, ] <- perf.boot.sim(sim.res.dis.hr.noc, "BC.5", "Prob.BC.5.nf", nboot)
-print(difftime(Sys.time(), start, units = "secs"))
+mean(abs(sim.v03.boot$oe$Frailty - 1) <= abs(sim.v03.boot$oe$NoFrailty - 1))
+mean(sim.v03.boot$auc$Frailty >= sim.v03.boot$auc$NoFrailty)
+mean(sim.v03.boot$rbs$Frailty <= sim.v03.boot$rbs$NoFrailty)
 
-res.all.hr.tab <- setNames(data.frame(matrix(NA, 6, 3)), c("OE", "AUC", "rBS"))
-for(i in 1:6){
-  res.all.hr.tab$OE[i] <- paste(round(res.all.hr$OE[i], 3), " (", round(res.all.hr$OE_lo[i], 3),
-                                ", ", round(res.all.hr$OE_hi[i], 3), ")", sep = "")
-  res.all.hr.tab$AUC[i] <- paste(round(res.all.hr$AUC[i], 3), " (", round(res.all.hr$AUC_lo[i], 3),
-                                 ", ", round(res.all.hr$AUC_hi[i], 3), ")", sep = "")
-  res.all.hr.tab$rBS[i] <- paste(round(res.all.hr$rBS[i], 3), " (", round(res.all.hr$rBS_lo[i], 3),
-                                 ", ", round(res.all.hr$rBS_hi[i], 3), ")", sep = "")
-}
+mean(abs(sim.v2.boot$oe$Frailty - 1) <= abs(sim.v2.boot$oe$NoFrailty - 1))
+mean(sim.v2.boot$auc$Frailty >= sim.v2.boot$auc$NoFrailty)
+mean(sim.v2.boot$rbs$Frailty <= sim.v2.boot$rbs$NoFrailty)
 
-rownames(res.all.hr.tab) <- c("BVN 0.3, Frailty", "BVN 0.3, No Frailty",
-                              "BVN 2, Frailty", "BVN 2, No Frailty",
-                              "DU, Frailty", "DU, No Frailty")
+mean(abs(sim.dis.boot$oe$Frailty - 1) <= abs(sim.dis.boot$oe$NoFrailty - 1))
+mean(sim.dis.boot$auc$Frailty >= sim.dis.boot$auc$NoFrailty)
+mean(sim.dis.boot$rbs$Frailty <= sim.dis.boot$rbs$NoFrailty)
 
-xtable(res.all.hr.tab)
+res.all[1:2, ] <- sim.v03.boot$res
+res.all[3:4, ] <- sim.v2.boot$res
+res.all[5:6, ] <- sim.dis.boot$res
 
+# Correlated frailty distribution
+sim.cor.boot <- perf.boot.sim.comp(sim.res.dis.cor.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", nboot)
 
-save(sim.res.v03.noc, sim.res.v2.noc, sim.res.dis.noc,
-     sim.fam.v03, sim.fam.v2, sim.fam.dis,
-     sim.res.v03.hr.noc, sim.res.v2.hr.noc, sim.res.dis.hr.noc,
-     sim.fam.v03.hr, sim.fam.v2.hr, sim.fam.dis.hr,
-     res.all, res.all.tab, res.all.hr, res.all.hr.tab,
-     file = "Frailty_Sim_Analysis_Results.RData")
+sim.cor.boot$res
+
+mean(abs(sim.cor.boot$oe$Frailty - 1) <= abs(sim.cor.boot$oe$NoFrailty - 1))
+mean(sim.cor.boot$auc$Frailty >= sim.cor.boot$auc$NoFrailty)
+mean(sim.cor.boot$rbs$Frailty <= sim.cor.boot$rbs$NoFrailty)
+
+save(sim.res.v03.noc, sim.res.v2.noc, sim.res.dis.noc, sim.res.dis.cor.noc,
+     sim.fam.v03, sim.fam.v2, sim.fam.dis, sim.fam.dis.cor,
+     res.all, sim.v03.boot, sim.v2.boot, sim.dis.boot, sim.cor.boot,
+     file = paste0(dir.sim, "/Frailty_Sim_Analysis_Results.RData"))
 
 
-########## High risk families ##########
+## High-risk allele frequencies
 
-nboot <- 1000
-res.all.hr <- setNames(data.frame(matrix(NA, 6, 9)), c("OE", "OE_lo", "OE_hi",
-                                                       "AUC", "AUC_lo", "AUC_hi",
-                                                       "rBS", "rBS_lo", "rBS_hi"))
+sim.v03.hr.boot <- perf.boot.sim.comp(sim.res.v03.hr.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", nboot)
+sim.v2.hr.boot <- perf.boot.sim.comp(sim.res.v2.hr.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", nboot)
+sim.dis.hr.boot <- perf.boot.sim.comp(sim.res.dis.hr.noc, "BC.5", "Prob.BC.5", "Prob.BC.5.nf", nboot)
 
-start <- Sys.time()
-res.all.hr[1, ] <- perf.boot.sim(sim.res.v03.noc.hr, "BC.5", "Prob.BC.5", nboot)
-res.all.hr[2, ] <- perf.boot.sim(sim.res.v03.noc.hr, "BC.5", "Prob.BC.5.nf", nboot)
-res.all.hr[3, ] <- perf.boot.sim(sim.res.v2.noc.hr, "BC.5", "Prob.BC.5", nboot)
-res.all.hr[4, ] <- perf.boot.sim(sim.res.v2.noc.hr, "BC.5", "Prob.BC.5.nf", nboot)
-res.all.hr[5, ] <- perf.boot.sim(sim.res.dis.noc.hr, "BC.5", "Prob.BC.5", nboot)
-res.all.hr[6, ] <- perf.boot.sim(sim.res.dis.noc.hr, "BC.5", "Prob.BC.5.nf", nboot)
-print(difftime(Sys.time(), start, units = "secs"))
+mean(abs(sim.v03.hr.boot$oe$Frailty - 1) <= abs(sim.v03.hr.boot$oe$NoFrailty - 1))
+mean(sim.v03.hr.boot$auc$Frailty >= sim.v03.hr.boot$auc$NoFrailty)
+mean(sim.v03.hr.boot$rbs$Frailty <= sim.v03.hr.boot$rbs$NoFrailty)
 
-res.all.tab.hr <- setNames(data.frame(matrix(NA, 6, 3)), c("OE", "AUC", "rBS"))
-for(i in 1:6){
-  res.all.tab.hr$OE[i] <- paste(round(res.all.hr$OE[i], 3), " (", round(res.all.hr$OE_lo[i], 3),
-                                ", ", round(res.all.hr$OE_hi[i], 3), ")", sep = "")
-  res.all.tab.hr$AUC[i] <- paste(round(res.all.hr$AUC[i], 3), " (", round(res.all.hr$AUC_lo[i], 3),
-                                 ", ", round(res.all.hr$AUC_hi[i], 3), ")", sep = "")
-  res.all.tab.hr$rBS[i] <- paste(round(res.all.hr$rBS[i], 3), " (", round(res.all.hr$rBS_lo[i], 3),
-                                 ", ", round(res.all.hr$rBS_hi[i], 3), ")", sep = "")
-}
+mean(abs(sim.v2.hr.boot$oe$Frailty - 1) <= abs(sim.v2.hr.boot$oe$NoFrailty - 1))
+mean(sim.v2.hr.boot$auc$Frailty >= sim.v2.hr.boot$auc$NoFrailty)
+mean(sim.v2.hr.boot$rbs$Frailty <= sim.v2.hr.boot$rbs$NoFrailty)
 
-xtable(res.all.tab.hr)
+mean(abs(sim.dis.hr.boot$oe$Frailty - 1) <= abs(sim.dis.hr.boot$oe$NoFrailty - 1))
+mean(sim.dis.hr.boot$auc$Frailty >= sim.dis.hr.boot$auc$NoFrailty)
+mean(sim.dis.hr.boot$rbs$Frailty <= sim.dis.hr.boot$rbs$NoFrailty)
 
+res.all.hr[1:2, ] <- sim.v03.hr.boot$res
+res.all.hr[3:4, ] <- sim.v2.hr.boot$res
+res.all.hr[5:6, ] <- sim.dis.hr.boot$res
 
 save(sim.res.v03.hr.noc, sim.res.v2.hr.noc, sim.res.dis.hr.noc,
      sim.fam.v03.hr, sim.fam.v2.hr, sim.fam.dis.hr,
-     res.all.hr, res.all.tab.hr,
-     file = "Frailty_Sim_Analysis_Results_hr.RData")
+     res.all.hr, sim.v03.hr.boot, sim.v2.hr.boot, sim.dis.hr.boot,
+     file = paste0(dir.sim, "/Frailty_Sim_Analysis_Results_hr.RData"))
 
 
