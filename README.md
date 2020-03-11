@@ -2,16 +2,13 @@
 
 ## Description
 
-This respository contains code to apply a frailty model to improve Mendelian model risk predictions. The Simulations folder contains simulation results for improving BRCAPRO breast cancer risk prediction under 6 settings: 2 types of BRCA1/2 mutation prevalences (low risk, high risk) and 3 types of data-generating frailty distributions (discrete uniform; bivariate normal with mean 0, correlation 0, and variances 0.3; bivariate normal with mean 0, correlation 0, and variances 2). All code is written by Theodore Huang except where specified.
+This respository contains code to apply a frailty model to improve Mendelian model risk predictions. The Simulations folder contains simulation results for improving BRCAPRO breast cancer risk prediction under 7 settings: the first 6 settings are from 2 types of BRCA1/2 mutation allele frequencies (default BRCAPRO, high-risk) and 3 types of data-generating frailty distributions (discrete uniform; bivariate normal with mean (0, 0), correlation 0, and variances 0.3; bivariate normal with mean (0, 0), correlation 0, and variances 2). The last setting uses default BRCAPRO allele frequencies with a frailty distribution where there is correlation between the breast and ovarian cancer frailty variates. All code is written by Theodore Huang except where specified.
 
 ## Running the code
 The way to reproduce the simulation results is as follows:
 
 1. Generate the data using one of the FrailtySimDatGen().R files (choice of prevalence and data-generating frailty distribution).
-2. Estimate the population-level frailty distribution:
-    1. First run the corresponding FrailtySim_Pop_().R file.
-    2. Then gather the data files together using code in Obtain Population-level Distributions Frailty Simulation.R.
-3. Obtain the family-specific frailty distributions and risk predictions:
+2. Obtain the family-specific frailty distributions and risk predictions:
     1. First run the corresponding FrailtySim_RP_().R file
     2. Then gather the data files together using code in Frailty Simulation Analysis.R.
     
@@ -23,7 +20,7 @@ Note that running the code requires the BayesMendel R package, which can be foun
 
 * Estimating Functions Discrete.R: functions used for the frailty method
 * Parameters Discrete.R: getting the baseline penetrances, survival functions, and hazard functions
-* ModelEvaluation_TH.R: code for getting model performance results (adapted from Zoe Guan's code)
+* Peeling Functions folder: functions for peeling-paring
 
 ### Simulations Folder
 
@@ -32,23 +29,20 @@ Note that running the code requires the BayesMendel R package, which can be foun
 * "Dis" means discrete uniform distribution
 * "V03" means bivariate normal distribution with mean 0, correlation 0, and variances of 0.3
 * "V2" means bivariate normal distribution with mean 0, correlation 0, and variances of 2
-* "_hr" means high-risk families (using higher prevalences for AJ and non-AJ families)
+* "hr" means high-risk families (using higher prevalences for AJ and non-AJ families)
+* "cor" means using the correlated frailty distribution
 
 #### Files
 
 * Frailty Simulation Functions.R: functions to generate data
 * FrailtySimDatGen().R: generating data
-* FrailtySim_Pop_().R: estimates population-level frailty distribution for simulations
 * FrailtySim_RP_().R: obtains family-specific frailty distributions and risk predictions for simulations
 * Frailty Simulation Analysis.R: code to obtain final results for simulation
-* Obtain Population-level Distributions Frailty Simulation.R: get population-level frailty           
-                                            distributions by gathering all the families together
 * simdat_().RData: simulated data
 * simdat_bc_().RData: subset of families with female probands free of breast cancer in simulated data
 
 #### Simulations subfolders:
 
-* Population Frailty Distribution folder: has all the population-level frailty distributions
 * Family Frailty Distribution folder: has all the family-level frailty distributions
 * Risk Predictions folder: has all the risk predictions
 * Cluster Files folder: files to run on Harvard FAS cluster
